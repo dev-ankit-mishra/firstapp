@@ -12,4 +12,3 @@ const App = () => {
 export default App;
 
 const styles = StyleSheet.create({});
-r;
