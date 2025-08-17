@@ -7,12 +7,31 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
   const [itemName, setItemName] = useState('');
   const [price, setPrice] = useState('');
   const [shoppingItems, setShoppingItems] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await AsyncStorage.getItem('shoppingItems');
+        if (data) {
+          setShoppingItems(JSON.parse(data));
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    load();
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem('shoppingItems', JSON.stringify(shoppingItems));
+  }, [shoppingItems]);
 
   const handleFormEvent = () => {
     if (!itemName || !price) return;
@@ -52,12 +71,14 @@ const App = () => {
         <TextInput
           style={styles.input}
           placeholder="Item Name"
+          placeholderTextColor="gray"
           value={itemName}
           onChangeText={setItemName}
         />
         <TextInput
           style={styles.input}
           placeholder="Item price"
+          placeholderTextColor="gray"
           value={price}
           onChangeText={setPrice}
           keyboardType="numeric"
@@ -120,7 +141,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   item: {
-    backgroundColor: '#e0f7fa',
+    backgroundColor: 'pink',
     padding: 12,
     marginVertical: 6,
     borderRadius: 6,
