@@ -6,6 +6,7 @@ import {
   Pressable,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,7 +35,10 @@ const App = () => {
   }, [shoppingItems]);
 
   const handleFormEvent = () => {
-    if (!itemName || !price) return;
+    if (!itemName || !price) {
+      Alert.alert('Missing Input', 'Please enter both item name and price.');
+      return;
+    }
 
     const newItem = {
       id: Date.now().toString(),
@@ -49,6 +53,17 @@ const App = () => {
 
   const deleteExpense = id => {
     setShoppingItems(shoppingItems.filter(item => item.id !== id));
+  };
+
+  const clearAll = () => {
+    Alert.alert('Confirm', 'Are you sure you want to clear all expenses?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Clear',
+        style: 'destructive',
+        onPress: () => setShoppingItems([]),
+      },
+    ]);
   };
 
   const renderItems = ({ item }) => (
@@ -86,6 +101,15 @@ const App = () => {
         <Pressable style={styles.formBtn} onPress={handleFormEvent}>
           <Text style={styles.formText}>Add</Text>
         </Pressable>
+
+        {/* New Clear All button */}
+        <Pressable
+          style={[styles.formBtn, { backgroundColor: 'red' }]}
+          onPress={clearAll}
+        >
+          <Text style={styles.formText}>Clear All</Text>
+        </Pressable>
+
         <FlatList
           data={shoppingItems}
           keyExtractor={item => item.id}
