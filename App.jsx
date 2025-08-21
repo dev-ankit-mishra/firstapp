@@ -56,10 +56,10 @@ const App = () => {
   };
 
   const clearAll = () => {
-    Alert.alert('Confirm', 'Are you sure you want to clear all expenses?', [
+    Alert.alert('Confirm', 'Are you sure you want to remove all expenses?', [
       { text: 'Cancel', style: 'cancel' },
       {
-        text: 'Clear',
+        text: 'Remove',
         style: 'destructive',
         onPress: () => setShoppingItems([]),
       },
