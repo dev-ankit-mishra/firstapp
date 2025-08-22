@@ -7,9 +7,11 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  Dimensions,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PieChart } from 'react-native-chart-kit';
 
 const App = () => {
   const [itemName, setItemName] = useState('');
@@ -79,9 +81,18 @@ const App = () => {
 
   const total = shoppingItems.reduce((sum, exp) => sum + exp.cost, 0);
 
+  const chartData = shoppingItems.map((item, index) => ({
+    name: item.title || `Item ${index + 1}`,
+    population: Number(item.cost) || 0,
+    color: `hsl(${index * 50}, 70%, 50%)`,
+    legendFontColor: '#333',
+    legendFontSize: 12,
+  }));
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Expense Calculator</Text>
+      <Text style={styles.heading}>Expense Tracker</Text>
+
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -102,21 +113,39 @@ const App = () => {
           <Text style={styles.formText}>Add</Text>
         </Pressable>
 
-        {/* New Clear All button */}
         <Pressable
           style={[styles.formBtn, { backgroundColor: 'red' }]}
           onPress={clearAll}
         >
           <Text style={styles.formText}>Clear All</Text>
         </Pressable>
-
-        <FlatList
-          data={shoppingItems}
-          keyExtractor={item => item.id}
-          renderItem={renderItems}
-        />
       </View>
-      <Text style={styles.result}>Total Amount : ₹{total}</Text>
+
+      <FlatList
+        data={shoppingItems}
+        keyExtractor={item => item.id}
+        renderItem={renderItems}
+        ListFooterComponent={
+          <View style={{ marginTop: 15 }}>
+            <Text style={styles.result}>Total Amount : ₹{total}</Text>
+
+            {shoppingItems.length > 0 && (
+              <PieChart
+                data={chartData}
+                width={Dimensions.get('window').width - 20}
+                height={220}
+                chartConfig={{
+                  color: (opacity = 1) => `rgba(0,0,0,${opacity})`,
+                }}
+                accessor="population"
+                backgroundColor="transparent"
+                paddingLeft="15"
+                absolute
+              />
+            )}
+          </View>
+        }
+      />
     </View>
   );
 };
