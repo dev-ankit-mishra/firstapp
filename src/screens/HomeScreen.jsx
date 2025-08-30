@@ -61,7 +61,6 @@ const HomeScreen = () => {
       setItemName('');
       setPrice('');
     } catch (error) {
-      console.error('Error adding item: ', error);
       Alert.alert('Error', 'Could not add the item.');
     }
   };
