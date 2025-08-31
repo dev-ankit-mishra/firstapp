@@ -42,7 +42,6 @@ const HomeScreen = () => {
       setLoading(false);
     });
 
-    // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, [userId]);
 
